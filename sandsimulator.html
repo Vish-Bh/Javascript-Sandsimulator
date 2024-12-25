@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+
+            box-sizing: border-box;
+        }
+
+        body {
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgb(104, 97, 97);
+            gap: 10px;
+        }
+
+        #test {
+            height: 80vh;
+            width: 80vw;
+            background-color: rgba(31, 30, 28, 0.748);
+            display: grid;
+        }
+
+        .black {
+            background-color: rgba(0, 0, 0, 0.228);
+        }
+
+        .white {
+            background-color: white;
+        }
+
+        .cell {
+          background-color: none;
+        }
+
+        #tools {
+            background-color: rgb(240, 248, 255);
+            height: 80vh;
+            width: 20vw;
+        }
+
+        #colorpicker {
+            height: 20%;
+            width: 80%;
+
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="tools">
+        <label for="colorpicker">Colorpicker</label>
+        <input id="colorpicker" type="color">
+        <br>
+        <!-- <button id="applygravity" onclick="down1(valuearray)">APPLY GRAVITY</button> -->
+        <button type="checked"></button>
+        <div asp="12"></div>
+    </div>
+    <div id="test"></div>
+</body>
+
+</html>
+<script>
+    let boolvalue= true
+    let aconstant = 10
+
+    let count = 0;
+    let mousedown = false
+    let mainarray = document.getElementById('test');
+    let heightdisplay = (mainarray.offsetHeight) / aconstant
+    let widthdisplay = (mainarray.offsetWidth) / aconstant
+    let valuearray = array2d(heightdisplay, widthdisplay)
+    let lengtha=valuearray.length
+    let widtha=valuearray[0].length
+    function get10(num1) {
+        if (num1 % 10 != 0) {
+            num1 = num1 - num1 % 10
+        }
+        return num1
+    };
+    function sizefix(id) {
+        let element = document.getElementById(id)
+        let height1 = get10(element.offsetHeight);
+        let width1 = get10(element.offsetWidth);
+        element.style.height = (String(get10(height1)) + 'px')
+        element.style.width = (String(get10(width1)) + 'px')
+
+    }
+
+
+    function array2d(num1, num2) {
+        let maze = []
+        for (let i = 0; i < num1-1; i++) {
+            maze[i] = []
+            for (let j = 0; j < num2-1; j++) {
+                maze[i][j] = 0
+            }
+
+        }
+        return maze
+    }
+    function displayarray(id, array) {
+        let element = document.getElementById(id);
+        element.innerHTML = "";
+        element.style.gridTemplateRows = `repeat(${array.length}, ${aconstant}px)`;
+        element.style.gridTemplateColumns = `repeat(${array[0].length}, ${aconstant}px)`;
+        array.forEach(row => {
+            row.forEach(cell => {
+                let cellElement = document.createElement('div')
+                cellElement.className = `cell ${cell === 1 ? "white" : "black"}`
+                cellElement.style.height=aconstant-1
+                cellElement.style.width=aconstant-1
+                cellElement.setAttribute('id','cellno'+ count)
+                cellElement.style.height = (aconstant - 2)
+                cellElement.style.width = (aconstant - 2)
+                cellElement.setAttribute('color', "none")
+                count++
+
+                element.appendChild(cellElement)
+            })
+        }
+        )
+
+    }
+
+    const occupyvalue = (num) => {
+        num = parseInt(num.substring(6))
+        let i = Math.floor((num)/valuearray[0].length)
+        let j = (num) % valuearray[0].length
+        valuearray[i][j]=1
+
+    }
+    const isoccupy=(num)=>{
+        num = parseInt(num.substring(6))
+        let i = Math.floor((num-1)/valuearray[0].length)
+        let j = (num-1) % valuearray[0].length
+        if (valuearray[i+1][j]===1 || i<length.array) {
+            return true
+        }
+        else{
+            return false
+        }
+    }
+    function retrunnum(id){
+        id = parseInt(id.substring(6))
+        let i = Math.floor((id)/valuearray[0].length)
+        let j = (id) % valuearray[0].length
+        let something=[i,j]
+        return something
+    }
+    function retrunid(a,b) {
+        return valuearray[0].length*a+b        
+        // console.log(`a is ${a} and b is ${b}`)
+    }
+    function switchcolors(cell1id,cell2id) {
+        const cell1=document.getElementById('cellno'+cell1id)
+        const cell2=document.getElementById('cellno'+cell2id)
+        cell1color=cell1.style.backgroundColor
+        cell2color=cell2.style.backgroundColor
+        cell1.style.backgroundColor=cell2color
+        cell2.style.backgroundColor=cell1color
+    }
+
+    function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+    async function down1(array2d) {
+        for (let i = 0; i < array2d.length; i++) {
+            
+            
+            for(let i=array2d.length-1;i>0;i--){
+
+                await delay(0.00001);
+                // console.log(i)
+                for (let j = 0; j < array2d[0].length; j++) {
+                    if ((array2d[i - 1][j] === 1)&& (array2d[i][j]===0)) { 
+                        array2d[i][j] = 1
+                        array2d[i - 1][j] = 0
+                        let cellid1=retrunid(i,j)
+                        let cellid2=retrunid(i-1,j)
+                        console.log(cellid1+' ' + cellid2)
+                        switchcolors(cellid1,cellid2)
+                        
+                        
+                        
+                    }
+                    
+                    
+                }
+                }}
+                // console.log(array2d)
+            }
+    
+    sizefix('test')
+    sizefix('tools')
+    displayarray('test', valuearray)
+    document.querySelector('#test').addEventListener('mousedown', function (event) {
+        let color = document.getElementById('colorpicker').value
+    
+        mousedown = true
+        if (event.target.classList.contains('cell')) {
+            let index=event.target.getAttribute('id')
+            event.target.style.backgroundColor = color
+            event.target.setAttribute('color', color)
+
+            console.log(event.target.getAttribute('id'))
+            occupyvalue(index)
+            down1(valuearray)
+        }
+    });
+    // while (true){
+        // down1(valuearray)
+    // }
+    document.querySelector('#test').addEventListener('mouseup', function () {
+        mousedown = false
+    });
+    document.querySelector('#test').addEventListener('mousemove', function (event) {
+        let color = document.getElementById('colorpicker').value
+
+        if (mousedown && event.target.classList.contains('cell')) {
+            event.target.style.backgroundColor = color
+            event.target.setAttribute('color', color)
+            let index=event.target.getAttribute('id')
+            console.log(event.target.getAttribute('id'))
+            console.log(event.target.getAttribute('color'))
+            down1(valuearray)
+            occupyvalue(index)
+
+        
+        }
+    });
+    setInterval(down1(valuearray), 0.001);
+    setInterval(down1(valuearray), 0.001);
+
+</script>
